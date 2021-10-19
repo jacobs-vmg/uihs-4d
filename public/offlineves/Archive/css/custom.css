@@ -1,0 +1,7 @@
+/* CSS Document */
+#page-title.page-title-parallax span {
+  font-size: 2rem; }
+
+@media (max-width: 767.98px) {
+  #page-title.page-title-parallax span {
+    font-size: 1.5rem; } }
