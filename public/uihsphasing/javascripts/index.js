@@ -121,7 +121,7 @@ $(document).ready(function(){
 
         var label1 = 'Inpatient Tower'
         var label2 = 'Research Tower'
-        var label3 = 'Abulatory Care Center'
+        var label3 = 'Ambulatory Care Center'
 
 
         var _rows = [];
