@@ -125,6 +125,7 @@ $(document).ready(function () {
 				spinner.hide();
 				showThreesixty();
 			});
+			$('#threesixty_images').children().eq(imageCount).children().first().show()
 		} else {
 			// ...if not, Loads the next image in the sequence
 			loadImage();
