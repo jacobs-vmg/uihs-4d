@@ -7,7 +7,7 @@ $(document).ready(function(){
     // $("input[name='displayState_']").click(function(event){
         // displayState = $("input[name='displayState']:checked").val()
         displayState = "cachedImages"  //images, video, cachedImages
-        isplayState = "images"
+        displayState = "images"
         switch (displayState){
             case 'images':
                 if ($('#phaseImage:visible').length == 0){
@@ -204,7 +204,7 @@ $(document).ready(function(){
                     break;
             }
             // if (typeof month !== 'undefined' && typeof _year !== "undefined"){
-                console.log(_year+'-'+_month)
+                // console.log(_year+'-'+_month)
             // }
             
         }
@@ -744,6 +744,35 @@ $(document).ready(function(){
             if (imageStateRatio < 0 ){
                 imageStateRatio = 0;
             }
+            var imageCount = Math.floor(imageStateRatio * numImages)
+            $('#threesixty_images').children().length
+            var url = formatImageName(imageCount)
+
+            // console.log(imageCount)
+            // $('#threesixty_images').children().each(function(){$(this).children().first().hide()})
+            if (imageCount > 180){
+                imageCount == 180
+            }
+            // $('#threesixty_images').children().eq(imageCount).children().first().show()
+
+            console.log(imageCount)
+            $('#threesixty_images').children().eq(imageCount).children().first().show()
+            $('#threesixty_images').children().each(function(index){
+                if (index != imageCount){
+                    $(this).children().first().hide()
+                }
+            })
+            
+
+            // $('#threesixty_images').children().each(function(){$(this).children().first().fadeOut(10)})
+            // $('#threesixty_images').children().eq(imageCount).children().first().fadeIn(10)
+            // if ($('#phaseImage:visible').length == 0){
+            //     $('#phaseImage').show();
+            //     $('#videoElement').hide();
+            // }
+            // $("#phaseImage").attr("src", url)
+            // break;
+            /*
 
             switch (displayState){
                 case 'images':
@@ -786,7 +815,7 @@ $(document).ready(function(){
                     break;
             }
 
-
+            */
 
         }
     }
