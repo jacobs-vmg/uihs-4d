@@ -748,18 +748,12 @@ $(document).ready(function(){
             if ((imageCount % 2) == 0 && imageCount > 2){
                 imageCount -= 1;
             } 
-            if (imageCount == 1){
-                imageCount += 2;
-            }
+            // if (imageCount == 1){
+            //     imageCount += 2;
+            // }
             $('#threesixty_images').children().length
             var url = formatImageName(imageCount)
 
-            // console.log(imageCount)
-            // $('#threesixty_images').children().each(function(){$(this).children().first().hide()})
-            // if (imageCount > 180){
-            //     imageCount == 180
-            // }
-            // $('#threesixty_images').children().eq(imageCount).children().first().show()
 
             console.log(imageCount)
             $('#threesixty_images').children().eq(imageCount).children().first().show()
@@ -770,58 +764,6 @@ $(document).ready(function(){
             })
             
 
-            // $('#threesixty_images').children().each(function(){$(this).children().first().fadeOut(10)})
-            // $('#threesixty_images').children().eq(imageCount).children().first().fadeIn(10)
-            // if ($('#phaseImage:visible').length == 0){
-            //     $('#phaseImage').show();
-            //     $('#videoElement').hide();
-            // }
-            // $("#phaseImage").attr("src", url)
-            // break;
-            /*
-
-            switch (displayState){
-                case 'images':
-                    // console.log('images')
-                    var imageCount = Math.floor(imageStateRatio * numImages)
-                    var url = formatImageName(imageCount)
-                    if ($('#phaseImage:visible').length == 0){
-                        $('#phaseImage').show();
-                        $('#videoElement').hide();
-                    }
-                    $("#phaseImage").attr("src", url)
-                    break;
-                case 'video':
-                    if ($('#videoElement:visible').length == 0){
-                        $('#videoElement').show();
-                        $('#phaseImage').hide();
-                    }
-                    // console.log(imageStateRatio)
-                    // myVideo = document.getElementById('my-video')
-                    var data = (imageStateRatio * myVideo.duration)
-                    var vidPos = parseFloat(data.toFixed(2))
-                    myVideo.currentTime = vidPos;
-                    
-                    // myVideo.fastSeek(vidPos)
-                    break;
-                case 'cachedImages':
-                    // console.log('images')
-                    var imageCount = Math.floor(imageStateRatio * numImages)
-                    var url = formatImageName(imageCount)
-                    if ($('#phaseImage:visible').length == 0){
-                        $('#phaseImage').show();
-                        $('#videoElement').hide();
-                    }
-                    try {
-                        $("#phaseImage").attr("src", url)
-                    } catch (err){
-                        
-                    }
-                    
-                    break;
-            }
-
-            */
 
         }
     }

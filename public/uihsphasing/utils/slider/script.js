@@ -27,7 +27,7 @@ $(document).ready(function () {
 			spinner,
 	
 			// Stores the total amount of images we have in the sequence
-			totalFrames = 479,
+			totalFrames = 478,
 			// The current frame value of the image slider animation
 			currentFrame = 0,
 			// Stores all the loaded image objects
@@ -76,14 +76,14 @@ $(document).ready(function () {
 		var li = document.createElement("li");
 		// Generates the image file name using the incremented "loadedImages" variable
 		// var imageName = "https://raw.githubusercontent.com/heartcode/360-Image-Slider/master/img/threesixty_" + (loadedImages + 1) + ".jpg";
-		var imageName = "/images/UIHC Masterplan_v1_AME_Optimized/UIHC Masterplan_" + (loadedImages + 1) + ".jpg";
+		var imageName = "/images/UIHC Masterplan_v1_AME_Optimized/UIHC Masterplan_" + (loadedImages + 2) + ".jpg";
 		// 'UIHC Masterplan_v1_AME_Optimized'
 		/*
 			Creates a new <img> and sets its src attribute to point to the file name we generated.
 			It also hides the image by applying the "previous-image" CSS class to it.
 			The image then is added to the <li>.
 		*/
-		var image = $('<img>').attr('src', imageName).width('100%').hide()/*.addClass("previous-image")*/.appendTo(li);
+		var image = $('<img>').attr('src', imageName).addClass('img-fluid').hide()/*.addClass("previous-image")*/.appendTo(li);
 		// var image = $('<img>').attr('src', imageName).addClass("previous-image").appendTo(li);
 		// We add the newly added image object (returned by jQuery) to the "frames" array.
 		frames.push(image);
