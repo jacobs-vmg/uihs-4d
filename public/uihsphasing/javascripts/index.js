@@ -47,7 +47,7 @@ $(document).ready(function(){
     google.charts.load('current', {'packages':['timeline']});
     google.charts.load('current', {'packages':['table']});
 
-    const numImages = 480;
+    const numImages = 478;
     var currentImage = 0;
     var imageUrls = [];
     
@@ -745,14 +745,20 @@ $(document).ready(function(){
                 imageStateRatio = 0;
             }
             var imageCount = Math.floor(imageStateRatio * numImages)
+            if ((imageCount % 2) == 0 && imageCount > 2){
+                imageCount -= 1;
+            } 
+            if (imageCount == 1){
+                imageCount += 2;
+            }
             $('#threesixty_images').children().length
             var url = formatImageName(imageCount)
 
             // console.log(imageCount)
             // $('#threesixty_images').children().each(function(){$(this).children().first().hide()})
-            if (imageCount > 180){
-                imageCount == 180
-            }
+            // if (imageCount > 180){
+            //     imageCount == 180
+            // }
             // $('#threesixty_images').children().eq(imageCount).children().first().show()
 
             console.log(imageCount)
