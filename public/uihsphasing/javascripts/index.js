@@ -47,7 +47,7 @@ $(document).ready(function(){
     google.charts.load('current', {'packages':['timeline']});
     google.charts.load('current', {'packages':['table']});
 
-    const numImages = 319;
+    const numImages = 480;
     var currentImage = 0;
     var imageUrls = [];
     

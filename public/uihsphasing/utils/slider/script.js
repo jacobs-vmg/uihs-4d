@@ -27,7 +27,7 @@ $(document).ready(function () {
 			spinner,
 	
 			// Stores the total amount of images we have in the sequence
-			totalFrames = 180,
+			totalFrames = 479,
 			// The current frame value of the image slider animation
 			currentFrame = 0,
 			// Stores all the loaded image objects
@@ -224,7 +224,9 @@ $(document).ready(function () {
 			Replaces the "current-image" class with the "previous-image" one on the image.
 			It calls the "getNormalizedCurrentFrame" method to translate the "currentFrame" value to the "totalFrames" range (1-180 by default).
 		*/
-		frames[getNormalizedCurrentFrame()].removeClass("current-image").addClass("previous-image");
+
+		//changed by david
+		// frames[getNormalizedCurrentFrame()].removeClass("current-image").addClass("previous-image");
 	};
 	
 	/**
@@ -235,7 +237,9 @@ $(document).ready(function () {
 			Replaces the "current-image" class with the "previous-image" one on the image.
 			It calls the "getNormalizedCurrentFrame" method to translate the "currentFrame" value to the "totalFrames" range (1-180 by default).
 		*/
-		frames[getNormalizedCurrentFrame()].removeClass("previous-image").addClass("current-image");
+
+
+		// frames[getNormalizedCurrentFrame()].removeClass("previous-image").addClass("current-image");
 	};
 	
 	/**
