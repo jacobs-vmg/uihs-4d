@@ -62,7 +62,7 @@ $(document).ready(function () {
 		spinner.setSpeed(4);
 		spinner.setColor("#333333");
 		// As its hidden and not rendering by default we have to call its show() method
-		// spinner.show();
+		spinner.show();
 		// We use the jQuery fadeIn method to slowly fade in the preloader
 		$("#spinner").fadeIn("slow");
 	};
@@ -125,7 +125,7 @@ $(document).ready(function () {
 				spinner.hide();
 				showThreesixty();
 			});
-			$('#threesixty_images').children().eq(imageCount).children().first().show()
+			$('#threesixty_images').children().eq(0).children().first().show()
 		} else {
 			// ...if not, Loads the next image in the sequence
 			loadImage();
@@ -363,4 +363,8 @@ $(document).ready(function () {
 			return;
 		}
 	};
+
+	// $(document).on('images:loaded',()=>{
+	// 	console.log('images are loaded')
+	// })
 });

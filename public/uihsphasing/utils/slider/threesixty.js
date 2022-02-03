@@ -2,6 +2,8 @@
 * We wrap all our code in the jQuery "DOM-ready" function to make sure the script runs only
 * after all the DOM elements are rendered and ready to take action
 */
+
+console.log('tests')
 $(document).ready(function () {
 	// Tells if the app is ready for user interaction
 	var ready = false,
