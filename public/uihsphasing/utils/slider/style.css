@@ -82,7 +82,7 @@
 	Sets the dimensions of the CanvasLoader placeholder <div>, it also centeres it horizontally and vertically inside the wrapper and makes it invisible by default
 */
 #spinner {
-	/* position:absolute; */
+	position:absolute;
 	left:50%;
 	top:50%;
 	width:90px;

@@ -113,6 +113,9 @@ $(document).ready(function(){
     }
 
     
+
+
+    
     $.get( "https://opensheet.vercel.app/18KEquOxH61YFRpCuSpy5OClQGmjrVLeeica4yaVWE7M/phasing", function(data){
         var list = []
         var headingSelected = false;
@@ -120,7 +123,7 @@ $(document).ready(function(){
         var dataTableArr = []
         var dataTableRowParent = ''
     
-        console.log(data)
+        // console.log(data)
         data.map((item)=>{
             if (item['Project Start'] != ''){
                 // console.log(true)
@@ -142,7 +145,7 @@ $(document).ready(function(){
 
             } else {
                 // console.log(false)
-                console.log(item['Project List'])
+                // console.log(item['Project List'])
                 headingSelected = true;
                 listpos = list.push({ 
                     item: item, 
@@ -219,7 +222,94 @@ $(document).ready(function(){
         dataTable.addColumn({ type: 'date', id: 'End' });
     }
 
+    function addTableData(datatable, chart){
+        $.get( "https://opensheet.vercel.app/1z8oPdPGGUAWS6lu3kIXuFTJZeoefXXGlKII-7CH-wak/phasing", function(data){
+            console.log(data)
+            leafArr = []
+            branchFlag = true; 
+            branch = ""
+            data.map((item, i, arr)=>{
+                // datatable
+                
+                if (!("Construction Start" in item)){
+                    // console.log("branch " + item)
+                    // branch = item
+                    
+                    branchFlag = true;
+                } else {
+                    // console.log("leaf " + item)
+                    if (branchFlag == true){
+                        branch = item["Project List"]
+                        branchFlag = false;
+                        // leafArr.push([ branch, "", new Date(item["Project Start"]), new Date(item["Project Complete"])])
+                        console.log(leafArr)
+                    } else {
+                        leaf = item["Project List"]
+                        // if (item["Project List"] == leaf){
+                        //     leaf = ""
+                        // } else leaf = item["Project List"]
+                        // leafArr.push([ branch, leaf, new Date(item["Project Start"]), new Date(item["Construction Start"])])
+                        // leafArr.push([ branch, leaf, new Date(item["Construction Start"]), new Date(item["Project Complete"])])
+                        leafArr.push([ branch, leaf, new Date(item["Project Start"]), new Date(item["Project Complete"])])
+                    }
+                    // if (item["Project List"] == branch){
+                    //     leaf = ""
+                    // } else leaf = item["Project List"]
+                    // leafArr.push([ branch, leaf, new Date(item["Project Start"]), new Date(item["Project Complete"])])
+                    
+                }
+                if (i+1 == arr.length){
+                    console.log('map done')
+                    datatable.addRows(leafArr)
+                    console.log(datatable)
+                    finishChart(chart, datatable)
+                }
+                
+            })
+            
+        })
+    }
 
+    function finishChart(chart, dataTable){
+        google.visualization.events.addListener(chart, 'select', function () {
+            selection = chart.getSelection();
+            if (selection.length > 0) {
+            // console.log(dataTable.getValue(selection[0].row, 0));
+            }
+        });
+    
+
+        var options = {
+            // timeline: { colorByRowLabel: false },
+            alternatingRowStyle: true,
+            enableInteractivity: true,
+            tooltip: {trigger: 'focus'},
+            // width: 100
+            height: getheight(),
+            colors: ['#00664F', '#BD472A', '#00AF66', '#00558C'],
+            // timeline: {groupByRowLabel: false},
+            hAxis: {
+                minValue: new Date(2022, 9, 1) ,
+                maxValue: new Date(2023, 12, 31) 
+            },	
+            // colors: ['#cbb69d', '#603913', '#c69c6e']
+        };
+        chart.draw(dataTable, options);
+
+        // una vez dibujado el timeline, leemos el SVG
+        svg = document.querySelector("#timeline svg"); 
+        // calculamos los tamaños que debe tener la barra
+        // var sizes = svg.querySelector("g:first-of-type path:first-of-type").getAttribute("d").split(",");
+        var sizes = $('svg g:first-of-type path:first-of-type').attr('d').split(',')
+        bar.style.height = (9*sizes[sizes.length-1])  + "px";
+        // y otros valores que nos ayudarán a calcular la nueva fecha más tarde
+        min = parseInt(sizes[0].substr(1));
+        totalTime = options.hAxis.maxValue - options.hAxis.minValue;
+        lengthTime = svg.getAttribute("width") - min;
+        initialDate = options.hAxis.minValue;
+
+        $('text').addClass('noselect')
+    }
 
     function drawChart() {
         var container = document.getElementById('timeline');
@@ -237,6 +327,10 @@ $(document).ready(function(){
         dataTable.addColumn({ type: 'string', id: 'Label'})
         dataTable.addColumn({ type: 'date', id: 'Start' });
         dataTable.addColumn({ type: 'date', id: 'End' });
+        
+
+        addTableData(dataTable, chart);
+/*
         dataTable.addRows([
 
             [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
@@ -323,345 +417,9 @@ $(document).ready(function(){
             [ "INF-New Roads - ACC Site (FTK Way & Grand Ave.)", "Construction", new Date(2024, 10), new Date(2027, 4) ],
             [ "INF-New Roads - ACC Site (FTK Way & Grand Ave.)", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
             [ "INF-New Roads - ACC Site (FTK Way & Grand Ave.)", "Demo", new Date(2024, 10), new Date(2027, 4) ],
-/*
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
 
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-
-            [ "New Carver College of Medicine Research Tower", "", new Date(2022, 11), new Date(2027, 9)],
-            [ "CCoM Research Tower", "Design Procurement", new Date(2022, 11), new Date(2024, 10) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            [ "CCoM Research Tower", "Med EQ / FF&E", new Date(2027, 4), new Date(2027, 9) ],
-            [ "CCoM Research Tower", "Construction", new Date(2024, 10), new Date(2027, 4) ],
-            */
         ]);
-
+*/
         // for (i=0; i<15; i++){
         //     // data.addColumn('number', 2021 +i);
         //     if (i%2 == 0){
@@ -673,44 +431,7 @@ $(document).ready(function(){
         // }
         // dataTable.addRows(_rows)
 
-        google.visualization.events.addListener(chart, 'select', function () {
-            selection = chart.getSelection();
-            if (selection.length > 0) {
-            // console.log(dataTable.getValue(selection[0].row, 0));
-            }
-        });
-    
-
-        var options = {
-            // timeline: { colorByRowLabel: false },
-            alternatingRowStyle: true,
-            enableInteractivity: false,
-            tooltip: {trigger: 'none'},
-            // width: 100
-            height: getheight(),
-            colors: ['#00664F', '#BD472A', '#00AF66', '#00558C'],
-            // timeline: {groupByRowLabel: false},
-            hAxis: {
-                minValue: new Date(2022, 9, 1) ,
-                maxValue: new Date(2023, 12, 31) 
-            },	
-            // colors: ['#cbb69d', '#603913', '#c69c6e']
-        };
-        chart.draw(dataTable, options);
-
-        // una vez dibujado el timeline, leemos el SVG
-        svg = document.querySelector("#timeline svg"); 
-        // calculamos los tamaños que debe tener la barra
-        // var sizes = svg.querySelector("g:first-of-type path:first-of-type").getAttribute("d").split(",");
-        var sizes = $('svg g:first-of-type path:first-of-type').attr('d').split(',')
-        bar.style.height = (9*sizes[sizes.length-1])  + "px";
-        // y otros valores que nos ayudarán a calcular la nueva fecha más tarde
-        min = parseInt(sizes[0].substr(1));
-        totalTime = options.hAxis.maxValue - options.hAxis.minValue;
-        lengthTime = svg.getAttribute("width") - min;
-        initialDate = options.hAxis.minValue;
-
-        $('text').addClass('noselect')
+ 
     }
 
     // las variables que vamos a usar
@@ -755,7 +476,7 @@ $(document).ready(function(){
             var url = formatImageName(imageCount)
 
 
-            console.log(imageCount)
+            // console.log(imageCount)
             $('#threesixty_images').children().eq(imageCount).children().first().show()
             $('#threesixty_images').children().each(function(index){
                 if (index != imageCount){
