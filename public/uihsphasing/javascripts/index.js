@@ -285,7 +285,7 @@ $(document).ready(function(){
             alternatingRowStyle: true,
             enableInteractivity: true,
             avoidOverlappingGridLines: false,
-            tooltip: {trigger: 'focus'},
+            tooltip: {trigger: 'none'},
             // width: 100
             height: getheight(),
             // colors: ['#00664F', '#BD472A', '#00AF66', '#00558C'],
