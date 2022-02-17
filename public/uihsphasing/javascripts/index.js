@@ -288,7 +288,7 @@ $(document).ready(function(){
             tooltip: {trigger: 'focus'},
             // width: 100
             height: getheight(),
-            colors: ['#00664F', '#BD472A', '#00AF66', '#00558C'],
+            // colors: ['#00664F', '#BD472A', '#00AF66', '#00558C'],
             // timeline: {groupByRowLabel: false},
             hAxis: {
                 minValue: new Date(2022, 7, 1) ,
