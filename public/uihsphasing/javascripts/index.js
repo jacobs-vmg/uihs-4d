@@ -223,7 +223,7 @@ $(document).ready(function(){
     }
 
     function addTableData(datatable, chart){
-        $.get( "https://opensheet.vercel.app/1z8oPdPGGUAWS6lu3kIXuFTJZeoefXXGlKII-7CH-wak/phasing", function(data){
+        $.get( "https://opensheet.vercel.app/1z8oPdPGGUAWS6lu3kIXuFTJZeoefXXGlKII-7CH-wak/phasing_v2", function(data){
             console.log(data)
             leafArr = []
             branchFlag = true; 
@@ -241,7 +241,7 @@ $(document).ready(function(){
                     if (branchFlag == true){
                         branch = item["Project List"]
                         branchFlag = false;
-                        // leafArr.push([ branch, "", new Date(item["Project Start"]), new Date(item["Project Complete"])])
+                        // leafArr.push([ branch, "", new Date(item["Construction Start"]), new Date(item["Project Complete"])])
                         console.log(leafArr)
                     } else {
                         leaf = item["Project List"]
@@ -250,7 +250,7 @@ $(document).ready(function(){
                         // } else leaf = item["Project List"]
                         // leafArr.push([ branch, leaf, new Date(item["Project Start"]), new Date(item["Construction Start"])])
                         // leafArr.push([ branch, leaf, new Date(item["Construction Start"]), new Date(item["Project Complete"])])
-                        leafArr.push([ branch, leaf, new Date(item["Project Start"]), new Date(item["Project Complete"])])
+                        leafArr.push([ branch, leaf, new Date(item["Construction Start"]), new Date(item["Project Complete"])])
                     }
                     // if (item["Project List"] == branch){
                     //     leaf = ""
@@ -260,6 +260,7 @@ $(document).ready(function(){
                 }
                 if (i+1 == arr.length){
                     console.log('map done')
+                    console.log(leafArr)
                     datatable.addRows(leafArr)
                     console.log(datatable)
                     finishChart(chart, datatable)
@@ -283,6 +284,7 @@ $(document).ready(function(){
             // timeline: { colorByRowLabel: false },
             alternatingRowStyle: true,
             enableInteractivity: true,
+            avoidOverlappingGridLines: false,
             tooltip: {trigger: 'focus'},
             // width: 100
             height: getheight(),
@@ -309,6 +311,12 @@ $(document).ready(function(){
         initialDate = options.hAxis.minValue;
 
         $('text').addClass('noselect')
+
+        let labels = document.getElementsByTagName("svg")[0].getElementsByTagName("g")[0].getElementsByTagName("text")
+        document.getElementsByTagName("svg")[0].style.overflow = 'visible'
+        for (var i=0; i < labels.length; i++) {
+            labels[i].setAttribute("y", -12)                                                                                     
+        }
     }
 
     function drawChart() {
