@@ -291,10 +291,16 @@ $(document).ready(function(){
             colors: ['#00664F', '#BD472A', '#00AF66', '#00558C'],
             // timeline: {groupByRowLabel: false},
             hAxis: {
-                minValue: new Date(2022, 9, 1) ,
-                maxValue: new Date(2023, 12, 31) 
+                minValue: new Date(2022, 7, 1) ,
+                maxValue: new Date(2032, 7, 1) 
             },	
-            // colors: ['#cbb69d', '#603913', '#c69c6e']
+            colors: ['#00548D', '#CCA300', '#B21918']
+
+            /* 
+            Renovations - Blue: #00548D
+            Construction - Gold: #CCA300
+            Demo - Red: #B21918
+            */
         };
         chart.draw(dataTable, options);
 
@@ -312,11 +318,13 @@ $(document).ready(function(){
 
         $('text').addClass('noselect')
 
-        let labels = document.getElementsByTagName("svg")[0].getElementsByTagName("g")[0].getElementsByTagName("text")
-        document.getElementsByTagName("svg")[0].style.overflow = 'visible'
-        for (var i=0; i < labels.length; i++) {
-            labels[i].setAttribute("y", -12)                                                                                     
-        }
+
+        // //relocate timeline 
+        // let labels = document.getElementsByTagName("svg")[0].getElementsByTagName("g")[0].getElementsByTagName("text")
+        // document.getElementsByTagName("svg")[0].style.overflow = 'visible'
+        // for (var i=0; i < labels.length; i++) {
+        //     labels[i].setAttribute("y", -12)                                                                                     
+        // }
     }
 
     function drawChart() {
