@@ -77,7 +77,7 @@ $(document).ready(function () {
 		// Generates the image file name using the incremented "loadedImages" variable
 		// var imageName = "https://raw.githubusercontent.com/heartcode/360-Image-Slider/master/img/threesixty_" + (loadedImages + 1) + ".jpg";
 		// var imageName = "/images/UIHC Masterplan_v1_AME_Optimized/UIHC Masterplan_" + (loadedImages + 2) + ".jpg";
-		var imageName = "/images/Frames_v7/UIHC Masterplan_v7_" + (loadedImages + 2) + ".jpg";
+		var imageName = "/images/Frames_v7_3/UIHC Masterplan_v7_" + (loadedImages + 2) + ".jpg";
 		// 'UIHC Masterplan_v1_AME_Optimized'
 		/*
 			Creates a new <img> and sets its src attribute to point to the file name we generated.
