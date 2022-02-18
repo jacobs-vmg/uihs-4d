@@ -292,7 +292,7 @@ $(document).ready(function(){
             // timeline: {groupByRowLabel: false},
             hAxis: {
                 minValue: new Date(2022, 7, 1) ,
-                maxValue: new Date(2032, 7, 1) 
+                maxValue: new Date(2032, 4, 1) 
             },	
             colors: ['#00548D', '#CCA300', '#B21918']
 
